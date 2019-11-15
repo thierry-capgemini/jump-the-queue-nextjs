@@ -19,8 +19,19 @@ const SignUpPage: React.FunctionComponent = () => (
 
     const baseUrl = environment.baseUrlRestServices;
 
-    const response = await fetch('http://localhost:3000/api/users');
-    const response = await fetch(baseUrl)
+    const response = await fetch(`${baseUrl}/visitormanagement/v1/visitor`,{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }, 
+      body: JSON.stringify({
+           firstName:this.state.firstName
+         })
+      })
+    //   .then(response => response.json())
+    //   .then(data => console.log(data))
+    //   .catch(error => console.log(error))
 
     const users = await response.json()
   
