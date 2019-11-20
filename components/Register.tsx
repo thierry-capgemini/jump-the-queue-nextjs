@@ -1,21 +1,109 @@
 import React, {useState} from 'react';
 import { Grid, TextField, Button, FormControlLabel, Checkbox, Link } from "@material-ui/core";
+import Visitor from '../backendModels/Visitor';
+import useSWR,  { mutate, trigger }  from 'swr'
 
-const Register: React.FunctionComponent = () => {
+ type Props = {goFetch: (visitor:Visitor) => Promise<void>}
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [phonenumber, setPhonenumber] = useState('');
+export type LoginInputs = {
+  username: string
+  name: string
+  password: string
+  phonenumber: string
+}
 
-  const handleSubmit = (e) => {
+// const Register: React.FunctionComponent<Props> = (props) => {
+ const Register: React.FunctionComponent<Props> = (props) => {
+
+
+  // const [username, setUsername] = useState('');
+  // const [name, setName] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [phonenumber, setPhonenumber] = useState('');
+
+  // const handleSubmit = (e: React.ChangeEvent<any>) => {
+  //   e.preventDefault();
+  //   const visitor: Visitor = new Visitor();
+  //   visitor.username = username;
+  //   visitor.name = name;
+  //   visitor.phoneNumber = phonenumber;
+  //   visitor.password = password;
+  //   visitor.acceptedCommercial = acceptedConditons.commercial;
+  //   visitor.acceptedTerms = acceptedConditons.terms;
+  //   visitor.userType = false;
+  //   console.log(visitor);
+  //   props.goFetch(visitor)
+
+  // }
+
+  const initialValues: LoginInputs = { 
+    username: "", 
+    name: "",
+    password: "", 
+    phonenumber: ""
+  };
+
+  const [inputs, setInputs] = useState(initialValues);
+  const [acceptedConditons, setAcceptedConditions] = useState({commercial: false, terms: false})
+
+  // const { data, error } = useSWR('/api/visitor', fetch)
+  // console.log(data);
+
+  const handleSubmit = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();
+    const visitor: Visitor = new Visitor();
+    visitor.username = inputs.username;
+    visitor.name = inputs.name;
+    visitor.phoneNumber = inputs.phonenumber;
+    visitor.password = inputs.password;
+    visitor.acceptedCommercial = acceptedConditons.commercial;
+    visitor.acceptedTerms = acceptedConditons.terms;
+    visitor.userType = false;
+    console.log(visitor);
+    props.goFetch(visitor)
+
+
+
+    // // mutate current data to optimistically update the UI
+    // // the fetch below could fail, in that case the UI will
+    // // be in an incorrect state
+    //   mutate('/api/data', {...data, visitor} , false)
+    //   // send text to the API
+    //   await fetch('/api/data', {
+    //     method: 'POST',
+    //     body: JSON.stringify({ visitor })
+    //   })
+    //   // to revalidate the data and ensure is not incorrect
+    //   // we trigger a revalidation of the data
+    //   trigger('/api/data')
+    setInputs(initialValues);
   }
+
+  const handleChange = (e: React.ChangeEvent<any>) => {
+    console.log(e.target.id)
+     setAcceptedConditions({
+        ...acceptedConditons,
+        [e.target.id] : e.target.checked
+     })
+
+  }
+   const handleInputChange = (e: React.ChangeEvent<any>) => {
+    //  const target = e.target;
+    //  const value = target.type === 'checkbox' ? target.checked : target.value;
+    //  const name = target.name;
+
+    //e.persist();
+    setInputs({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    });
+   }
 
 return (
 
     <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
+          
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
@@ -23,8 +111,10 @@ return (
                 fullWidth
                 id="email"
                 label="Email Address"
-                name="email"
+                name="username"
                 autoComplete="email"
+                onChange={handleInputChange}
+                // onChange={(e) => setUsername(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -37,18 +127,22 @@ return (
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={handleInputChange}
+                // onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                autoComplete="fname"
-                name="firstName"
+                autoComplete="name"
+                name="name"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="First Name"
+                id="name"
+                label="name"
                 autoFocus
+                onChange={handleInputChange}
+                // onChange={(e) => setName(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -58,20 +152,33 @@ return (
                 fullWidth
                 id="phoneNumber"
                 label="Phone Number"
-                name="phoneNumber"
+                name="phonenumber"
                 autoComplete="pnumber"
+                onChange={handleInputChange}
+                // onChange={(e) =>setPhonenumber(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
+                // name="terms"
                 label="Accept Terms and Conditons"
+                control={<Checkbox value="acceptedTerms"  id="terms" color="primary" checked={acceptedConditons.terms} onChange={handleChange} />} 
+                    // onChange={(e) => setAcceptedTerms(e.target.checked)
+                    
               />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
+                // name= "commercial"
                 label="I want to receive notifications"
+                control={<Checkbox 
+                  id="commercial"
+                  value="acceptedCommercial" 
+                  color="primary" 
+                  checked={acceptedConditons.commercial} 
+                  onChange={handleChange}
+                  // onChange={(e) => setAcceptedCommercial(e.target.checked)
+                  />} 
               />
             </Grid>
             <Grid container justify="center" >
@@ -96,8 +203,6 @@ return (
             </Grid>
           </Grid> */}
         </form>
-
-
 )
         }
         
