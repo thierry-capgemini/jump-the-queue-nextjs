@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import { Grid, TextField, Button, FormControlLabel, Checkbox, Link } from "@material-ui/core";
 import Visitor from '../backendModels/Visitor';
-import useSWR,  { mutate, trigger }  from 'swr'
+import {login} from "../utils/auth"
+import fetch from 'isomorphic-unfetch'
 
- type Props = {goFetch: (visitor:Visitor) => Promise<void>}
+
+//  type Props = {goFetch: (visitor:Visitor) => Promise<users>}
 
 export type LoginInputs = {
   username: string
@@ -12,29 +14,7 @@ export type LoginInputs = {
   phonenumber: string
 }
 
-// const Register: React.FunctionComponent<Props> = (props) => {
- const Register: React.FunctionComponent<Props> = (props) => {
-
-
-  // const [username, setUsername] = useState('');
-  // const [name, setName] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [phonenumber, setPhonenumber] = useState('');
-
-  // const handleSubmit = (e: React.ChangeEvent<any>) => {
-  //   e.preventDefault();
-  //   const visitor: Visitor = new Visitor();
-  //   visitor.username = username;
-  //   visitor.name = name;
-  //   visitor.phoneNumber = phonenumber;
-  //   visitor.password = password;
-  //   visitor.acceptedCommercial = acceptedConditons.commercial;
-  //   visitor.acceptedTerms = acceptedConditons.terms;
-  //   visitor.userType = false;
-  //   console.log(visitor);
-  //   props.goFetch(visitor)
-
-  // }
+ const Register: React.FunctionComponent = () => {
 
   const initialValues: LoginInputs = { 
     username: "", 
@@ -46,8 +26,7 @@ export type LoginInputs = {
   const [inputs, setInputs] = useState(initialValues);
   const [acceptedConditons, setAcceptedConditions] = useState({commercial: false, terms: false})
 
-  // const { data, error } = useSWR('/api/visitor', fetch)
-  // console.log(data);
+  
 
   const handleSubmit = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();
@@ -60,23 +39,41 @@ export type LoginInputs = {
     visitor.acceptedTerms = acceptedConditons.terms;
     visitor.userType = false;
     console.log(visitor);
-    props.goFetch(visitor)
-
-
-
-    // // mutate current data to optimistically update the UI
-    // // the fetch below could fail, in that case the UI will
-    // // be in an incorrect state
-    //   mutate('/api/data', {...data, visitor} , false)
-    //   // send text to the API
-    //   await fetch('/api/data', {
-    //     method: 'POST',
-    //     body: JSON.stringify({ visitor })
-    //   })
-    //   // to revalidate the data and ensure is not incorrect
-    //   // we trigger a revalidation of the data
-    //   trigger('/api/data')
+    // props.goFetch(visitor)
     setInputs(initialValues);
+
+    const url = '/api/visitor'
+
+    //  const response = await fetch(url)
+
+
+    const response = await fetch(url,{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      }, 
+      body: JSON.stringify({
+         visitor
+         })
+      })
+
+    if (response.status === 200) {
+      // const { token } = await response.json()
+       console.log('got here')
+      // console.log(token);
+      console.log(response);
+
+      // await login({ token })  ok next step
+    } else {
+      console.log('Login failed.')
+      console.log(response.statusText)
+      // https://github.com/developit/unfetch#caveats
+      //  let error = new Error(response.statusText)
+      // // error.response = response
+      //  throw error
+      //  console.log(error)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<any>) => {

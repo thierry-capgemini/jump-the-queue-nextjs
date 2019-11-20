@@ -12,4 +12,6 @@ const IndexPage: React.FunctionComponent = () => (
     </>
   );
 
+  export default IndexPage;
+
   
