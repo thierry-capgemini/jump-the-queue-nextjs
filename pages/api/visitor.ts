@@ -5,7 +5,7 @@ import fetch from 'isomorphic-unfetch'
  export default async (req, res) => {
      // Get data from your database
     
-         const { visitor } = await req.body
+     const { visitor } = await req.body
      console.log('visitor was here', visitor)
      const baseUrl = environment.baseUrlRestServices;
      const url = `${baseUrl}/visitormanagement/v1/visitor`

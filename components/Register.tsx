@@ -40,7 +40,7 @@ export type LoginInputs = {
     visitor.userType = false;
     console.log(visitor);
     // props.goFetch(visitor)
-    setInputs(initialValues);
+    
 
     const url = '/api/visitor'
 

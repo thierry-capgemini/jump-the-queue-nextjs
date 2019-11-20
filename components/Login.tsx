@@ -1,16 +1,37 @@
 import React, {useState} from 'react';
 import { Grid, TextField, FormControlLabel, Button, Link, Checkbox } from "@material-ui/core";
 
+
+export type LoginInputs = {
+  username: string
+  password: string
+}
+
 const Login: React.FunctionComponent = () => {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
+
+  const initialValues: LoginInputs = { 
+    username: "", 
+    password: "", 
+  };
+
+  const [inputs, setInputs] = useState(initialValues);
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(email, password);
+    console.log(inputs.username, inputs.password);
   }
+
+  const handleInputChange = (e: React.ChangeEvent<any>) => {
+
+    setInputs({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    });
+   }
 
   return (
 
@@ -24,9 +45,9 @@ const Login: React.FunctionComponent = () => {
                 fullWidth
                 id="email"
                 label="Email Address"
-                name="email"
+                name="username"
                 autoComplete="email"
-                onChange={(e)=>setEmail(e.target.value)}
+                onChange={handleInputChange}
               />
             </Grid>
 
@@ -40,7 +61,7 @@ const Login: React.FunctionComponent = () => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                onChange={(e)=>setPassword(e.target.value)}
+                onChange={handleInputChange}
               />
             </Grid>
 
@@ -52,7 +73,7 @@ const Login: React.FunctionComponent = () => {
                         variant="contained"
                         color="primary"
                     >
-                        Sign Up
+                        Log In
                     </Button>
                 </Grid>
 
